@@ -1,0 +1,44 @@
+@font-face {
+    font-family: 'uni_sansheavy_caps';
+    src: url('uni-sans-heavy-webfont.woff2') format('woff2'),
+         url('uni-sans-heavy-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Benton Sans", "Helvetica Neue", helvetica, arial, sans-serif;
+  color: white;
+  margin: 2em;
+  background-color: #5b187c;
+}
+
+h1 {
+  font-family: uni_sansheavy_caps, "Benton Sans", helvetica, sans-serif;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+p {
+  max-width: 600px;
+}
+
+li {
+  margin-bottom: 5px;
+}
+
+a {
+  color: white;
+}
+
+footer {
+  margin-top: 50px;
+  padding-top: 25px;
+  border-top: 1px solid lightgrey;
+}

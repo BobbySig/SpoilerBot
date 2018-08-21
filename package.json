@@ -1,0 +1,27 @@
+{
+  "name": "discord-spoilerbot",
+  "version": "0.2.0",
+  "description": "A Discord bot that re-posts spoiler-laden messages as secret GitHub Gists to keep your server spoiler-free.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node --use_strict server.js"
+  },
+  "dependencies": {
+    "express": "^4.16.3",
+    "discord.js": "^11.4.0",
+    "caesar-salad": "^1.0.1"
+  },
+  "engines": {
+    "node": "8.x"
+  },
+  "repository": {
+    "url": "https://glitch.com/edit/#!/discord-spoilerbot"
+  },
+  "license": "GPL-3.0-or-later",
+  "keywords": [
+    "node",
+    "glitch",
+    "express"
+  ]
+}
