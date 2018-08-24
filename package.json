@@ -12,11 +12,14 @@
     "discord.js": "^11.4.0",
     "caesar-salad": "^1.0.1"
   },
+  "devDependencies": {
+    "dotenv": "^6.0.0"
+  },
   "engines": {
     "node": "8.x"
   },
   "repository": {
-    "url": "https://glitch.com/edit/#!/discord-spoilerbot"
+    "url": "https://github.com/BobbySig/SpoilerBot"
   },
   "license": "GPL-3.0-or-later",
   "keywords": [
