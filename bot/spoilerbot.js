@@ -49,7 +49,7 @@ async function sendSpoilerMessage(message) {
           });
           message.delete();
         } catch (e) {
-          console.error("Error: Unable to send title text to long message. Log:");
+          console.error("Error: Unable to send title text too long message. Log:");
           console.error(e);
         }
       } else if (encodedCiphertext.length > 2000) {
@@ -63,7 +63,7 @@ async function sendSpoilerMessage(message) {
           });
           message.delete();
         } catch (e) {
-          console.error("Error: Unable to send spoiler text to long message. Log:");
+          console.error("Error: Unable to send spoiler text too long message. Log:");
           console.error(e);
         }
       } else {
@@ -86,7 +86,7 @@ async function sendSpoilerMessage(message) {
 }
 
 process.on('unhandledRejection', (reason, p) => {
-  console.log("Unhandled Promise Rejection at: Promise ", p, "reason:", reason);
+  console.error("Unhandled Promise Rejection at: Promise ", p, "reason:", reason);
 });
 
 client.on("ready", () => {
