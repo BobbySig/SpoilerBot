@@ -1,7 +1,8 @@
 /* --- Express Site Code --- */
 
 // Init Environment
-//require('dotenv').load();
+if (process.env.NODE_ENV !== "production")
+    require('dotenv').load();
 
 // Init Express
 var express = require('express');

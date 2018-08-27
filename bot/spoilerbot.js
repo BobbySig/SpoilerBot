@@ -7,73 +7,96 @@ var client = new Discord.Client();
 const caesarSalad = require('caesar-salad');
 const ROT13 = caesarSalad.ROT13;
 
-var Strings = require("./strings.js");
-var botStrings = new Strings();
-const baseLength = " `".length + "` \n".length + botStrings.FOOTER.length;
+var Config = require("./config.js");
+var config = new Config();
 
-function sendHelpMessage(message) {
-  var embed = new Discord.RichEmbed()
-    .setTitle("SpoilerBot Help")
-    .setURL("https://discord-spoilerbot.glitch.me")
-    .setColor(botStrings.COLOR)
-    .setDescription(botStrings.HELP_MSG);
-  message.author.send({embed});
-  message.delete();
+async function sendHelpMessage(message) {
+  try {
+    var embed = new Discord.RichEmbed()
+      .setTitle("SpoilerBot Help")
+      .setURL("https://discord-spoilerbot.glitch.me")
+      .setColor(config.COLOR)
+      .setDescription(config.HELP_MSG);
+    message.author.send({embed});
+    message.delete();
+  } catch (e) {
+    console.error("Error: Unable to send help message. Log:");
+    console.error(e);
+  }
 }
 
-function sendSpoilerMessage(message) {
+async function sendSpoilerMessage(message) {
   var embed;
-  var spoilerMsg = message.content.substring(botStrings.CMD_SPOILER.length + 1);
-  var splitIndex = spoilerMsg.includes(botStrings.DELINIATOR);
+  var spoilerMsg = message.content.substring(config.CMD_SPOILER.length + 1);
+  var splitIndex = spoilerMsg.includes(config.DELINIATOR);
   if (spoilerMsg === "" || splitIndex === false) {
     sendHelpMessage(message);
   } else {
-    var spoilerFields = spoilerMsg.split(botStrings.DELINIATOR);
+    var spoilerFields = spoilerMsg.split(config.DELINIATOR);
     if (spoilerFields[1] === "") {
       sendHelpMessage(message);
     } else {
       var ciphertext = ROT13.Cipher().crypt(spoilerFields[1]);
       var encodedCiphertext = encodeURIComponent(ciphertext);
       if (spoilerFields[0].length > 256) {
-        embed = new Discord.RichEmbed()
-          .setTitle("Your Spoiler's Title is Too Long!")
-          .setColor(botStrings.COLOR)
-          .setDescription(botStrings.OVERLENGTH_TITLE + botStrings.OVERLENGTH_FOOTER);
-        message.author.send({embed}).then(() => {
-          message.author.send(message.content);
-        });
-        message.delete();
+        try {
+          embed = new Discord.RichEmbed()
+            .setTitle("Your Spoiler's Title is Too Long!")
+            .setColor(config.COLOR)
+            .setDescription(config.OVERLENGTH_TITLE + config.OVERLENGTH_FOOTER);
+          message.author.send({embed}).then(() => {
+            message.author.send(message.content);
+          });
+          message.delete();
+        } catch (e) {
+          console.error("Error: Unable to send title text too long message. Log:");
+          console.error(e);
+        }
       } else if (encodedCiphertext.length > 2000) {
-        embed = new Discord.RichEmbed()
-          .setTitle("Your Spoiler Text is Too Long!")
-          .setColor(botStrings.COLOR)
-          .setDescription(botStrings.OVERLENGTH_SPOILER + botStrings.OVERLENGTH_FOOTER);
-        message.author.send({embed}).then(() => {
-          message.author.send(message.content);
-        });
-        message.delete();
+        try {
+          embed = new Discord.RichEmbed()
+            .setTitle("Your Spoiler Text is Too Long!")
+            .setColor(config.COLOR)
+            .setDescription(config.OVERLENGTH_SPOILER + config.OVERLENGTH_FOOTER);
+          message.author.send({embed}).then(() => {
+            message.author.send(message.content);
+          });
+          message.delete();
+        } catch (e) {
+          console.error("Error: Unable to send spoiler text too long message. Log:");
+          console.error(e);
+        }
       } else {
-        embed = new Discord.RichEmbed()
-          .setAuthor(message.author.username, message.author.displayAvatarURL)
-          .setTitle(spoilerFields[0])
-          .setURL(botStrings.DECODE_URL_BASE + encodedCiphertext)
-          .setColor(botStrings.COLOR)
-          .setDescription(ciphertext.trim());
-        message.channel.send({embed});
-        message.delete();
+        try {
+          embed = new Discord.RichEmbed()
+            .setAuthor(message.author.username, message.author.displayAvatarURL)
+            .setTitle(spoilerFields[0])
+            .setURL(config.DECODE_URL_BASE + encodedCiphertext)
+            .setColor(config.COLOR)
+            .setDescription(ciphertext.trim());
+          message.channel.send({embed});
+          message.delete();
+        } catch (e) {
+          console.error("Error: Unable to send spoiler message. Log:");
+          console.error(e);
+        }
       }
     }
   }
 }
+
+process.on('unhandledRejection', (reason, p) => {
+  console.error("Unhandled Promise Rejection at: Promise ", p, "reason:", reason);
+});
 
 client.on("ready", () => {
   console.log("SpoilerBot online.");
 });
 
 client.on("message", (message) => {
-  if (message.author.bot || !(message.channel instanceof Discord.TextChannel) || !message.content.startsWith(botStrings.PREFIX)) {
+  if (message.author.bot || !(message.channel instanceof Discord.TextChannel) || !message.content.startsWith(config.PREFIX)) {
     return;
-  } else if (message.content.startsWith(botStrings.CMD_SPOILER)) {
+  } else if (message.content.startsWith(config.CMD_SPOILER)) {
     sendSpoilerMessage(message);
   }
 });
