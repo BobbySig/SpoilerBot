@@ -4,6 +4,10 @@
 if (process.env.NODE_ENV !== "production")
     require('dotenv').load();
 
+// Load Imported Code
+const Discord = require('discord.js');
+const SpoilerBot = require('./bot/spoilerbot');
+
 // Init Express
 var express = require('express');
 var app = express();
@@ -21,6 +25,7 @@ var listener = app.listen(process.env.PORT, function() {
   console.log('Your app is listening on port ' + listener.address().port);
 });
 
-/* --- Load SpoilerBot Code --- */
-
-require('./bot/spoilerbot.js');
+/* --- Launch SpoilerBot --- */
+var client = new Discord.Client();
+var bot = new SpoilerBot(client);
+bot.start();
