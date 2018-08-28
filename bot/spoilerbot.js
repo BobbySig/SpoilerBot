@@ -8,34 +8,28 @@ class SpoilerBot {
     this.config = new Config();
     // Configure and start the Discord client.
     this.client = client;
-    this.client.on("ready", function() {
-      console.log("SpoilerBot online.");
-    });
-    this.client.on("message", function(message) {
-      handleMsg(message);
-    });
   }
 
   /* --- Message Handlers --- */
   handleMsg(msg) {
-    if (shouldRespond(msg) && message.content.startsWith(config.CMD_SPOILER)) {
-      processSpoiler(message);
+    if (this.shouldRespond(msg) && msg.content.startsWith(this.config.CMD_SPOILER)) {
+      this.processSpoiler(msg);
     }
   }
 
   processSpoiler(msg) {
     // Determine if we should send just the help message.
     var spoilerMsg = msg.content.substring(this.config.CMD_SPOILER.length + 1);
-    var spoilerBreakdown = spoilerMsg.split(config.DELINIATOR);
-    if (spoilerMsg === "" || spoilerBreakdown.length == 1 || spoilerBreakdown[1].trim === "") {
-      sendHelpMsg(msg);
+    var spoilerBreakdown = spoilerMsg.split(this.config.DELINIATOR);
+    if (spoilerMsg === "" || spoilerBreakdown.length == 1 || spoilerBreakdown[1].trim() === "") {
+      this.sendHelpMsg(msg);
       return;
     }
 
     // Determine if the title is too long.
     var spTitle = spoilerBreakdown[0];
     if (spTitle.length > 256) {
-      sendTitleTooLongMsg(msg);
+      this.sendTitleTooLongMsg(msg);
       return;
     }
 
@@ -44,12 +38,12 @@ class SpoilerBot {
     var spEncoded = ROT13.Cipher().crypt(spSpoiler);
     var spURL = this.config.DECODE_URL_BASE + encodeURIComponent(spURL);
     if (spURL.length > 2000) {
-      sendSpoilerTooLongMsg(msg);
+      this.sendSpoilerTooLongMsg(msg);
       return;
     }
 
     // Our message is a valid spoiler, send it.
-    sendSpoilerMessage(msg, spTitle, spEncoded, spURL, msg.author.username, message.author.displayAvatarURL);
+    this.sendSpoilerMessage(msg, spTitle, spEncoded, spURL, msg.author.username, msg.author.displayAvatarURL);
   }
 
   /* --- Message Handling Helpers --- */
@@ -60,11 +54,12 @@ class SpoilerBot {
   }
 
   sendTitleTooLongMsg(msg) {
+    var bot = this;
     var errMsg = errorMsg("Your spoiler's title is too long!",
       this.config.OVERLENGTH_TITLE,
       this.config.OVERLENGTH_FOOTER);
-    sendMsg(errMsg, msg.author).then(() => {
-      sendMsg(msg.content, msg.author);
+    this.sendMsg(errMsg, msg.author).then(() => {
+      bot.sendMsg(msg.content, msg.author);
     }).catch((e) => {
       console.error("Error: Unable to send spoiler title too long message. Log:");
       console.error(e);
@@ -76,11 +71,12 @@ class SpoilerBot {
   }
 
   sendSpoilerTooLongMsg(msg) {
+    var bot = this;
     var errMsg = errorMsg("Your spoiler is too long!",
       this.config.OVERLENGTH_SPOILER,
       this.config.OVERLENGTH_FOOTER);
-    sendMsg(errMsg, msg.author).then(() => {
-      sendMsg(msg.content, msg.author);
+    this.sendMsg(errMsg, msg.author).then(() => {
+      bot.sendMsg(msg.content, msg.author);
     }).catch((e) => {
       console.error("Error: Unable to send spoiler text too long message. Log:");
       console.error(e);
@@ -98,22 +94,22 @@ class SpoilerBot {
       .setURL(encodedSpoilerUrl)
       .setColor(this.config.COLOR)
       .setDescription(encodedSpoiler.trim());
-    sendMsg({embed}, msg.channel).catch((e) => {
+    this.sendMsg({embed}, msg.channel).catch((e) => {
       console.error("Error: Unable to send spoiler message. Log:");
       console.error(e);
     });
-    deleteMsg(msg).catch((e) => {
+    this.deleteMsg(msg).catch((e) => {
       console.error("Error: Unable to delete original message. Log:");
       console.error(e);
     });
   }
 
   sendHelpMsg(msg) {
-    sendMsg(helpMsg(), msg.author).catch((e) => {
+    this.sendMsg(this.helpMsg(), msg.author).catch((e) => {
       console.error("Unable to send help message. Log:");
       console.error(e);
     });
-    deleteMsg(msg).catch((e) => {
+    this.deleteMsg(msg).catch((e) => {
       console.error("Error: Unable to delete original message. Log:");
       console.error(e);
     });
@@ -124,8 +120,8 @@ class SpoilerBot {
     var embed = new Discord.RichEmbed()
       .setTitle("SpoilerBot Help")
       .setURL("https://discord-spoilerbot.glitch.me")
-      .setColor(config.COLOR)
-      .setDescription(config.HELP_MSG);
+      .setColor(this.config.COLOR)
+      .setDescription(this.config.HELP_MSG);
     return {embed};
   }
 
@@ -148,6 +144,13 @@ class SpoilerBot {
   }
 
   start() {
+    var bot = this;
+    this.client.on("ready", function() {
+      console.log("SpoilerBot online.");
+    });
+    this.client.on("message", function(message) {
+      bot.handleMsg(message);
+    });
     this.client.login(process.env.DISCORD_SECRET);
   }
 }
