@@ -27,7 +27,7 @@ class SpoilerBot {
     }
 
     // Determine if the title is too long.
-    var spTitle = spoilerBreakdown[0];
+    var spTitle = spoilerBreakdown[0].trim();
     if (spTitle.length > 256) {
       this.sendTitleTooLongMsg(msg);
       return;
