@@ -1,87 +1,157 @@
-/* --- Discord Bot Code --- */
+const Discord = require("discord.js");
+const ROT13 = require('caesar-salad').ROT13;
+const Config = require("./config.js");
 
-// Initialization
-var Discord = require("discord.js");
-var client = new Discord.Client();
+class SpoilerBot {
+  constructor(client) {
+    // Initialize class variables that are always used.
+    this.config = new Config();
+    // Configure and start the Discord client.
+    this.client = client;
+  }
 
-const caesarSalad = require('caesar-salad');
-const ROT13 = caesarSalad.ROT13;
+  /* --- Message Handlers --- */
+  handleMsg(msg) {
+    if (this.shouldRespond(msg) && msg.content.startsWith(this.config.CMD_SPOILER)) {
+      this.processSpoiler(msg);
+    }
+  }
 
-var Config = require("./config.js");
-var config = new Config();
+  processSpoiler(msg) {
+    // Determine if we should send just the help message.
+    var spoilerMsg = msg.content.substring(this.config.CMD_SPOILER.length + 1);
+    var spoilerBreakdown = spoilerMsg.split(this.config.DELINIATOR);
+    if (spoilerMsg === "" || spoilerBreakdown.length == 1 || spoilerBreakdown[1].trim() === "") {
+      this.sendHelpMsg(msg);
+      return;
+    }
 
-async function sendHelpMessage(message) {
-  try {
+    // Determine if the title is too long.
+    var spTitle = spoilerBreakdown[0].trim();
+    if (spTitle.length > 256) {
+      this.sendTitleTooLongMsg(msg);
+      return;
+    }
+
+    // Determine if the spoiler's final URL is too long.
+    var spSpoiler = spoilerBreakdown[1].trim();
+    var spEncoded = ROT13.Cipher().crypt(spSpoiler);
+    var spURL = this.config.DECODE_URL_BASE + encodeURIComponent(spEncoded);
+    if (spURL.length > 2000) {
+      this.sendSpoilerTooLongMsg(msg);
+      return;
+    }
+
+    // Our message is a valid spoiler, send it.
+    this.sendSpoilerMessage(msg, spTitle, spEncoded, spURL, msg.author.username, msg.author.displayAvatarURL);
+  }
+
+  /* --- Message Handling Helpers --- */
+  shouldRespond(message) {
+    if (message.author.bot || !(message.channel instanceof Discord.TextChannel) || !message.content.startsWith("!"))
+      return false;
+    return true;
+  }
+
+  sendTitleTooLongMsg(msg) {
+    var bot = this;
+    var errMsg = this.errorMsg("Your spoiler's title is too long!",
+      this.config.OVERLENGTH_TITLE,
+      this.config.OVERLENGTH_FOOTER);
+    this.sendMsg(errMsg, msg.author).then(() => {
+      bot.sendMsg(msg.content, msg.author);
+    }).catch((e) => {
+      console.error("Error: Unable to send spoiler title too long message. Log:");
+      console.error(e);
+    });
+    this.deleteMsg(msg).catch((e) => {
+      console.error("Error: Unable to delete original message. Log:");
+      console.error(e);
+    });
+  }
+
+  sendSpoilerTooLongMsg(msg) {
+    var bot = this;
+    var errMsg = this.errorMsg("Your spoiler is too long!",
+      this.config.OVERLENGTH_SPOILER,
+      this.config.OVERLENGTH_FOOTER);
+    this.sendMsg(errMsg, msg.author).then(() => {
+      bot.sendMsg(msg.content, msg.author);
+    }).catch((e) => {
+      console.error("Error: Unable to send spoiler text too long message. Log:");
+      console.error(e);
+    });
+    this.deleteMsg(msg).catch((e) => {
+      console.error("Error: Unable to delete original message. Log:");
+      console.error(e);
+    });
+  }
+
+  sendSpoilerMessage(msg, title, encodedSpoiler, encodedSpoilerUrl, username, avatarURL) {
+    var embed = new Discord.RichEmbed()
+      .setAuthor(username, avatarURL)
+      .setTitle(title)
+      .setURL(encodedSpoilerUrl)
+      .setColor(this.config.COLOR)
+      .setDescription(encodedSpoiler.trim());
+    this.sendMsg({embed}, msg.channel).catch((e) => {
+      console.error("Error: Unable to send spoiler message. Log:");
+      console.error(e);
+    });
+    this.deleteMsg(msg).catch((e) => {
+      console.error("Error: Unable to delete original message. Log:");
+      console.error(e);
+    });
+  }
+
+  sendHelpMsg(msg) {
+    this.sendMsg(this.helpMsg(), msg.author).catch((e) => {
+      console.error("Unable to send help message. Log:");
+      console.error(e);
+    });
+    this.deleteMsg(msg).catch((e) => {
+      console.error("Error: Unable to delete original message. Log:");
+      console.error(e);
+    });
+  }
+
+  /* --- Message Generators --- */
+  helpMsg() {
     var embed = new Discord.RichEmbed()
       .setTitle("SpoilerBot Help")
       .setURL("https://discord-spoilerbot.glitch.me")
-      .setColor(config.COLOR)
-      .setDescription(config.HELP_MSG);
-    message.author.send({embed});
-    message.delete();
-  } catch (e) {
-    console.error("Error: Unable to send help message. Log:");
-    console.error(e);
+      .setColor(this.config.COLOR)
+      .setDescription(this.config.HELP_MSG);
+    return {embed};
   }
-}
 
-async function sendSpoilerMessage(message) {
-  var embed;
-  var spoilerMsg = message.content.substring(config.CMD_SPOILER.length + 1);
-  var splitIndex = spoilerMsg.includes(config.DELINIATOR);
-  if (spoilerMsg === "" || splitIndex === false) {
-    sendHelpMessage(message);
-  } else {
-    var spoilerFields = spoilerMsg.split(config.DELINIATOR);
-    if (spoilerFields[1] === "") {
-      sendHelpMessage(message);
-    } else {
-      var ciphertext = ROT13.Cipher().crypt(spoilerFields[1]);
-      var encodedCiphertext = encodeURIComponent(ciphertext);
-      if (spoilerFields[0].length > 256) {
-        try {
-          embed = new Discord.RichEmbed()
-            .setTitle("Your Spoiler's Title is Too Long!")
-            .setColor(config.COLOR)
-            .setDescription(config.OVERLENGTH_TITLE + config.OVERLENGTH_FOOTER);
-          message.author.send({embed}).then(() => {
-            message.author.send(message.content);
-          });
-          message.delete();
-        } catch (e) {
-          console.error("Error: Unable to send title text too long message. Log:");
-          console.error(e);
-        }
-      } else if (encodedCiphertext.length > 2000) {
-        try {
-          embed = new Discord.RichEmbed()
-            .setTitle("Your Spoiler Text is Too Long!")
-            .setColor(config.COLOR)
-            .setDescription(config.OVERLENGTH_SPOILER + config.OVERLENGTH_FOOTER);
-          message.author.send({embed}).then(() => {
-            message.author.send(message.content);
-          });
-          message.delete();
-        } catch (e) {
-          console.error("Error: Unable to send spoiler text too long message. Log:");
-          console.error(e);
-        }
-      } else {
-        try {
-          embed = new Discord.RichEmbed()
-            .setAuthor(message.author.username, message.author.displayAvatarURL)
-            .setTitle(spoilerFields[0])
-            .setURL(config.DECODE_URL_BASE + encodedCiphertext)
-            .setColor(config.COLOR)
-            .setDescription(ciphertext.trim());
-          message.channel.send({embed});
-          message.delete();
-        } catch (e) {
-          console.error("Error: Unable to send spoiler message. Log:");
-          console.error(e);
-        }
-      }
-    }
+  errorMsg(errorTitle, errorMessage, errorFooter) {
+    var embed = new Discord.RichEmbed()
+      .setTitle(errorTitle)
+      .setColor(this.config.COLOR)
+      .setDescription(errorMessage)
+      .setFooter(errorFooter);
+    return {embed};
+  }
+
+  /* --- Network Task Helpers --- */
+  async sendMsg(msg, channel) {
+    return channel.send(msg);
+  }
+
+  async deleteMsg(msg) {
+    return msg.delete();
+  }
+
+  start() {
+    var bot = this;
+    this.client.on("ready", function() {
+      console.log("SpoilerBot online.");
+    });
+    this.client.on("message", function(message) {
+      bot.handleMsg(message);
+    });
+    this.client.login(process.env.DISCORD_SECRET);
   }
 }
 
@@ -89,17 +159,4 @@ process.on('unhandledRejection', (reason, p) => {
   console.error("Unhandled Promise Rejection at: Promise ", p, "reason:", reason);
 });
 
-client.on("ready", () => {
-  console.log("SpoilerBot online.");
-});
-
-client.on("message", (message) => {
-  if (message.author.bot || !(message.channel instanceof Discord.TextChannel) || !message.content.startsWith(config.PREFIX)) {
-    return;
-  } else if (message.content.startsWith(config.CMD_SPOILER)) {
-    sendSpoilerMessage(message);
-  }
-});
-
-// Start the Discord bot login process.
-client.login(process.env.DISCORD_SECRET);
+module.exports = SpoilerBot;

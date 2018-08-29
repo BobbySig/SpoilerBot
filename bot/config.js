@@ -2,7 +2,7 @@
 
 var botConfig = require("./config.json");
 
-class Strings {
+class Config {
   constructor() {
     // Single Characters
     this.PREFIX = botConfig.prefix;
@@ -29,4 +29,4 @@ class Strings {
   }
 }
 
-module.exports = Strings;
+module.exports = Config;
