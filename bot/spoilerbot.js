@@ -55,7 +55,7 @@ class SpoilerBot {
 
   sendTitleTooLongMsg(msg) {
     var bot = this;
-    var errMsg = errorMsg("Your spoiler's title is too long!",
+    var errMsg = this.errorMsg("Your spoiler's title is too long!",
       this.config.OVERLENGTH_TITLE,
       this.config.OVERLENGTH_FOOTER);
     this.sendMsg(errMsg, msg.author).then(() => {
@@ -64,7 +64,7 @@ class SpoilerBot {
       console.error("Error: Unable to send spoiler title too long message. Log:");
       console.error(e);
     });
-    deleteMsg(msg).catch((e) => {
+    this.deleteMsg(msg).catch((e) => {
       console.error("Error: Unable to delete original message. Log:");
       console.error(e);
     });
@@ -72,7 +72,7 @@ class SpoilerBot {
 
   sendSpoilerTooLongMsg(msg) {
     var bot = this;
-    var errMsg = errorMsg("Your spoiler is too long!",
+    var errMsg = this.errorMsg("Your spoiler is too long!",
       this.config.OVERLENGTH_SPOILER,
       this.config.OVERLENGTH_FOOTER);
     this.sendMsg(errMsg, msg.author).then(() => {
@@ -81,7 +81,7 @@ class SpoilerBot {
       console.error("Error: Unable to send spoiler text too long message. Log:");
       console.error(e);
     });
-    deleteMsg(msg).catch((e) => {
+    this.deleteMsg(msg).catch((e) => {
       console.error("Error: Unable to delete original message. Log:");
       console.error(e);
     });
