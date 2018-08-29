@@ -36,7 +36,7 @@ class SpoilerBot {
     // Determine if the spoiler's final URL is too long.
     var spSpoiler = spoilerBreakdown[1];
     var spEncoded = ROT13.Cipher().crypt(spSpoiler);
-    var spURL = this.config.DECODE_URL_BASE + encodeURIComponent(spURL);
+    var spURL = this.config.DECODE_URL_BASE + encodeURIComponent(spEncoded);
     if (spURL.length > 2000) {
       this.sendSpoilerTooLongMsg(msg);
       return;
