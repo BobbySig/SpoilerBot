@@ -2,7 +2,7 @@
 
 // Init Environment
 if (process.env.NODE_ENV !== "production")
-    require('dotenv').load();
+  require('dotenv').load();
 
 // Load Imported Code
 const Discord = require('discord.js');

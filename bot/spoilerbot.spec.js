@@ -165,7 +165,6 @@ describe('SpoilerBot', function() {
       };
     });
 
-    // TODO Test valid spoiler message variants
     it('should call sendSpoilerMessage when the message is a valid full spoiler message', function() {
       var content = config.CMD_SPOILER + " " + this.strings.title.valid + " " +
         config.DELINIATOR + " " + this.strings.content.valid;
@@ -181,11 +180,11 @@ describe('SpoilerBot', function() {
       expect(this.bot.sendSpoilerMessage.called).to.equal(true);
       expect(this.bot.sendSpoilerMessage.calledWithExactly(
         this.mockSpoilerMsg,
-        this.strings.title.valid,
-        encoded,
-        url,
-        this.mockSpoilerMsg.author.username,
-        this.mockSpoilerMsg.author.displayAvatarURL
+        this.strings.title.valid.trim(),
+        encoded.trim(),
+        url.trim(),
+        this.mockSpoilerMsg.author.username.trim(),
+        this.mockSpoilerMsg.author.displayAvatarURL.trim()
       )).to.equal(true);
     });
 
