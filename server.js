@@ -22,10 +22,13 @@ app.get('/', function(request, response) {
 
 // Start listening for web requests.
 var listener = app.listen(process.env.PORT, function() {
-  console.log('Your app is listening on port ' + listener.address().port);
+  console.log('Express is listening on port ' + listener.address().port);
 });
 
 /* --- Launch SpoilerBot --- */
 var client = new Discord.Client();
 var bot = new SpoilerBot(client);
-bot.start();
+bot.start().catch(function(reason) {
+  console.error('Error: Discord login failed. Log:');
+  console.error(reason);
+});

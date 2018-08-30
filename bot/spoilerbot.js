@@ -6,8 +6,15 @@ class SpoilerBot {
   constructor(client) {
     // Initialize class variables that are always used.
     this.config = new Config();
-    // Configure and start the Discord client.
+    // Configure the Discord client.
     this.client = client;
+    var bot = this;
+    this.client.on("ready", function() {
+      console.log("SpoilerBot online.");
+    });
+    this.client.on("message", function(message) {
+      bot.handleMsg(message);
+    });
   }
 
   /* --- Message Handlers --- */
@@ -143,15 +150,8 @@ class SpoilerBot {
     return msg.delete();
   }
 
-  start() {
-    var bot = this;
-    this.client.on("ready", function() {
-      console.log("SpoilerBot online.");
-    });
-    this.client.on("message", function(message) {
-      bot.handleMsg(message);
-    });
-    this.client.login(process.env.DISCORD_SECRET);
+  async start() {
+    return this.client.login(process.env.DISCORD_SECRET);
   }
 }
 
