@@ -155,8 +155,4 @@ class SpoilerBot {
   }
 }
 
-process.on('unhandledRejection', (reason, p) => {
-  console.error("Unhandled Promise Rejection at: Promise ", p, "reason:", reason);
-});
-
 module.exports = SpoilerBot;
