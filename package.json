@@ -10,11 +10,11 @@
   },
   "dependencies": {
     "caesar-salad": "^1.0.1",
-    "discord.js": "^11.4.0"
+    "discord.js": "^11.4.0",
+    "express": "^4.16.3"
   },
   "devDependencies": {
     "dotenv": "^6.0.0",
-    "express": "^4.16.3",
     "mocha": "^5.2.0",
     "sinon": "^6.1.5",
     "chai": "^4.1.2"
