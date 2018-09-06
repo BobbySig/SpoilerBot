@@ -340,6 +340,27 @@ describe('SpoilerBot', function() {
   });
 
   describe('Message Generators', function() {
-    //TODO
+    describe('helpMsg', function() {
+      it('returns a message containing the embed for the help message', function() {
+        var embed = new Discord.RichEmbed()
+          .setTitle(this.bot.config.HELP_TITLE)
+          .setURL(this.bot.config.HOMEPAGE)
+          .setColor(this.bot.config.COLOR)
+          .setDescription(this.bot.config.HELP_MSG);
+        expect({embed}).to.deep.equal(this.bot.helpMsg());
+      });
+    });
+
+    describe('errorMsg', function() {
+      it('returns a rich embed with the requested error message', function() {
+        var title = "ErrTitle", msg = "ErrMsg", footer = "ErrFooter";
+        var embed = new Discord.RichEmbed()
+          .setTitle(title)
+          .setColor(this.bot.config.COLOR)
+          .setDescription(msg)
+          .setFooter(footer);
+        expect({embed}).to.deep.equal(this.bot.errorMsg(title, msg, footer));
+      });
+    });
   });
 });
