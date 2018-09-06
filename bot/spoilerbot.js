@@ -119,8 +119,8 @@ class SpoilerBot {
   /* --- Message Generators --- */
   helpMsg() {
     var embed = new Discord.RichEmbed()
-      .setTitle("SpoilerBot Help")
-      .setURL("https://discord-spoilerbot.glitch.me")
+      .setTitle(this.config.HELP_TITLE)
+      .setURL(this.config.HOMEPAGE)
       .setColor(this.config.COLOR)
       .setDescription(this.config.HELP_MSG);
     return {embed};
