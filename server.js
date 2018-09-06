@@ -28,7 +28,7 @@ var listener = app.listen(process.env.PORT, function() {
 /* --- Launch SpoilerBot --- */
 var client = new Discord.Client();
 var bot = new SpoilerBot(client);
-bot.start().catch(function(reason) {
+client.login(process.env.DISCORD_SECRET).catch(function(reason) {
   console.error('Error: Discord login failed. Log:');
   console.error(reason);
 });

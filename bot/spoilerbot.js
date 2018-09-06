@@ -143,10 +143,6 @@ class SpoilerBot {
   deleteMsg(msg) {
     return msg.delete();
   }
-
-  start() {
-    return this.client.login(process.env.DISCORD_SECRET);
-  }
 }
 
 module.exports = SpoilerBot;
