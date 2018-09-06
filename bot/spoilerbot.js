@@ -67,12 +67,10 @@ class SpoilerBot {
       this.config.OVERLENGTH_FOOTER);
     this.sendMsg(errMsg, msg.author).then(() => {
       bot.sendMsg(msg.content, msg.author);
+    }).then(() => {
+      return this.deleteMsg(msg);
     }).catch((e) => {
       console.error("Error: Unable to send spoiler title too long message. Log:");
-      console.error(e);
-    });
-    this.deleteMsg(msg).catch((e) => {
-      console.error("Error: Unable to delete original message. Log:");
       console.error(e);
     });
   }
@@ -82,42 +80,38 @@ class SpoilerBot {
     var errMsg = this.errorMsg("Your spoiler is too long!",
       this.config.OVERLENGTH_SPOILER,
       this.config.OVERLENGTH_FOOTER);
-    this.sendMsg(errMsg, msg.author).then(() => {
-      bot.sendMsg(msg.content, msg.author);
+    return this.sendMsg(errMsg, msg.author).then(() => {
+      return bot.sendMsg(msg.content, msg.author);
+    }).then(() => {
+      return bot.deleteMsg(msg);
     }).catch((e) => {
       console.error("Error: Unable to send spoiler text too long message. Log:");
-      console.error(e);
-    });
-    this.deleteMsg(msg).catch((e) => {
-      console.error("Error: Unable to delete original message. Log:");
       console.error(e);
     });
   }
 
   sendSpoilerMessage(msg, title, encodedSpoiler, encodedSpoilerUrl, username, avatarURL) {
+    var bot = this;
     var embed = new Discord.RichEmbed()
       .setAuthor(username, avatarURL)
       .setTitle(title)
       .setURL(encodedSpoilerUrl)
       .setColor(this.config.COLOR)
       .setDescription(encodedSpoiler.trim());
-    this.sendMsg({embed}, msg.channel).catch((e) => {
+    return this.sendMsg({embed}, msg.channel).then(() => {
+      return bot.deleteMsg(msg);
+    }).catch((e) => {
       console.error("Error: Unable to send spoiler message. Log:");
-      console.error(e);
-    });
-    this.deleteMsg(msg).catch((e) => {
-      console.error("Error: Unable to delete original message. Log:");
       console.error(e);
     });
   }
 
   sendHelpMsg(msg) {
-    this.sendMsg(this.helpMsg(), msg.author).catch((e) => {
+    var bot = this;
+    return this.sendMsg(this.helpMsg(), msg.author).then(() => {
+      return bot.deleteMsg(msg);
+    }).catch((e) => {
       console.error("Unable to send help message. Log:");
-      console.error(e);
-    });
-    this.deleteMsg(msg).catch((e) => {
-      console.error("Error: Unable to delete original message. Log:");
       console.error(e);
     });
   }
