@@ -27,6 +27,7 @@ class Config {
 
     // Overlength Messages
     this.OVERLENGTH_SPOILER = "Your spoiler is too long, please shorten it.";
+    this.OVERLENGTH_TITLE_HEAD = "Your spoiler's title is too long!";
     this.OVERLENGTH_TITLE = "Your spoiler's title is too long," +
       " please shorten it to 256 characters or less.";
     this.OVERLENGTH_FOOTER = " Here's your original message:";
