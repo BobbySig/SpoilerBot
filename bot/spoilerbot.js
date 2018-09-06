@@ -142,15 +142,15 @@ class SpoilerBot {
   }
 
   /* --- Network Task Helpers --- */
-  async sendMsg(msg, channel) {
+  sendMsg(msg, channel) {
     return channel.send(msg);
   }
 
-  async deleteMsg(msg) {
+  deleteMsg(msg) {
     return msg.delete();
   }
 
-  async start() {
+  start() {
     return this.client.login(process.env.DISCORD_SECRET);
   }
 }
