@@ -304,9 +304,15 @@ describe('SpoilerBot', function() {
     describe('sendTitleTooLongMsg', function() {
       it('sends the title too long error & the original message to the author, then deletes the original', async function() {
         this.prepBothResolve();
+        var errMsg = this.bot.errorMsg(this.bot.config.OVERLENGTH_TITLE_HEAD,
+          this.bot.config.OVERLENGTH_TITLE,
+          this.bot.config.OVERLENGTH_FOOTER);
         await this.bot.sendTitleTooLongMsg(this.handlingHelperTestMsg);
         expect(this.bot.sendMsg.calledTwice).to.equal(true);
+        expect(this.bot.sendMsg.getCall(0).args).to.deep.equal([errMsg, this.handlingHelperTestMsg.author]);
+        expect(this.bot.sendMsg.getCall(1).args).to.deep.equal([this.handlingHelperTestMsg.content, this.handlingHelperTestMsg.author]);
         expect(this.bot.deleteMsg.calledOnce).to.equal(true);
+        expect(this.bot.deleteMsg.getCall(0).args).to.deep.equal([this.handlingHelperTestMsg]);
       });
     });
 
