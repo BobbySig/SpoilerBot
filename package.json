@@ -1,6 +1,6 @@
 {
   "name": "discord-spoilerbot",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "A Discord bot that re-posts spoiler-laden messages as secret GitHub Gists to keep your server spoiler-free.",
   "main": "server.js",
   "scripts": {
