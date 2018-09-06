@@ -3,18 +3,17 @@ const ROT13 = require('caesar-salad').ROT13;
 const Config = require("./config.js");
 
 class SpoilerBot {
-  constructor(client) {
+  constructor(client, disableDefaultMsgBindings = false) {
     // Initialize class variables that are always used.
     this.config = new Config();
     // Configure the Discord client.
     this.client = client;
     var bot = this;
-    this.client.on("ready", function() {
-      console.log("SpoilerBot online.");
-    });
-    this.client.on("message", function(message) {
-      bot.handleMsg(message);
-    });
+    if (!disableDefaultMsgBindings) {
+      this.client.on("message", function(message) {
+        bot.handleMsg(message);
+      });
+    }
   }
 
   /* --- Message Handlers --- */
@@ -142,10 +141,6 @@ class SpoilerBot {
 
   deleteMsg(msg) {
     return msg.delete();
-  }
-
-  start() {
-    return this.client.login(process.env.DISCORD_SECRET);
   }
 }
 
