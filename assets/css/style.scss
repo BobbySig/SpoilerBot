@@ -1,3 +1,8 @@
+---
+---
+
+@import "{{ site.theme }}";
+
 @font-face {
     font-family: 'uni_sansheavy_caps';
     src: url('../SpoilerBot/assets/uni-sans-heavy-webfont.woff2') format('woff2'),
@@ -25,20 +30,10 @@ h1 {
   font-weight: bold;
 }
 
-p {
-  max-width: 600px;
-}
-
 li {
   margin-bottom: 5px;
 }
 
 a {
   color: white;
-}
-
-footer {
-  margin-top: 50px;
-  padding-top: 25px;
-  border-top: 1px solid lightgrey;
 }
