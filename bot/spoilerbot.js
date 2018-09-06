@@ -65,10 +65,10 @@ class SpoilerBot {
     var errMsg = this.errorMsg("Your spoiler's title is too long!",
       this.config.OVERLENGTH_TITLE,
       this.config.OVERLENGTH_FOOTER);
-    this.sendMsg(errMsg, msg.author).then(() => {
-      bot.sendMsg(msg.content, msg.author);
+    return this.sendMsg(errMsg, msg.author).then(() => {
+      return bot.sendMsg(msg.content, msg.author);
     }).then(() => {
-      return this.deleteMsg(msg);
+      return bot.deleteMsg(msg);
     }).catch((e) => {
       console.error("Error: Unable to send spoiler title too long message. Log:");
       console.error(e);
