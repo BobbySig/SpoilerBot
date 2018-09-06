@@ -6,8 +6,15 @@ class SpoilerBot {
   constructor(client) {
     // Initialize class variables that are always used.
     this.config = new Config();
-    // Configure and start the Discord client.
+    // Configure the Discord client.
     this.client = client;
+    var bot = this;
+    this.client.on("ready", function() {
+      console.log("SpoilerBot online.");
+    });
+    this.client.on("message", function(message) {
+      bot.handleMsg(message);
+    });
   }
 
   /* --- Message Handlers --- */
@@ -58,14 +65,12 @@ class SpoilerBot {
     var errMsg = this.errorMsg("Your spoiler's title is too long!",
       this.config.OVERLENGTH_TITLE,
       this.config.OVERLENGTH_FOOTER);
-    this.sendMsg(errMsg, msg.author).then(() => {
-      bot.sendMsg(msg.content, msg.author);
+    return this.sendMsg(errMsg, msg.author).then(() => {
+      return bot.sendMsg(msg.content, msg.author);
+    }).then(() => {
+      return bot.deleteMsg(msg);
     }).catch((e) => {
       console.error("Error: Unable to send spoiler title too long message. Log:");
-      console.error(e);
-    });
-    this.deleteMsg(msg).catch((e) => {
-      console.error("Error: Unable to delete original message. Log:");
       console.error(e);
     });
   }
@@ -75,42 +80,38 @@ class SpoilerBot {
     var errMsg = this.errorMsg("Your spoiler is too long!",
       this.config.OVERLENGTH_SPOILER,
       this.config.OVERLENGTH_FOOTER);
-    this.sendMsg(errMsg, msg.author).then(() => {
-      bot.sendMsg(msg.content, msg.author);
+    return this.sendMsg(errMsg, msg.author).then(() => {
+      return bot.sendMsg(msg.content, msg.author);
+    }).then(() => {
+      return bot.deleteMsg(msg);
     }).catch((e) => {
       console.error("Error: Unable to send spoiler text too long message. Log:");
-      console.error(e);
-    });
-    this.deleteMsg(msg).catch((e) => {
-      console.error("Error: Unable to delete original message. Log:");
       console.error(e);
     });
   }
 
   sendSpoilerMessage(msg, title, encodedSpoiler, encodedSpoilerUrl, username, avatarURL) {
+    var bot = this;
     var embed = new Discord.RichEmbed()
       .setAuthor(username, avatarURL)
       .setTitle(title)
       .setURL(encodedSpoilerUrl)
       .setColor(this.config.COLOR)
       .setDescription(encodedSpoiler.trim());
-    this.sendMsg({embed}, msg.channel).catch((e) => {
+    return this.sendMsg({embed}, msg.channel).then(() => {
+      return bot.deleteMsg(msg);
+    }).catch((e) => {
       console.error("Error: Unable to send spoiler message. Log:");
-      console.error(e);
-    });
-    this.deleteMsg(msg).catch((e) => {
-      console.error("Error: Unable to delete original message. Log:");
       console.error(e);
     });
   }
 
   sendHelpMsg(msg) {
-    this.sendMsg(this.helpMsg(), msg.author).catch((e) => {
+    var bot = this;
+    return this.sendMsg(this.helpMsg(), msg.author).then(() => {
+      return bot.deleteMsg(msg);
+    }).catch((e) => {
       console.error("Unable to send help message. Log:");
-      console.error(e);
-    });
-    this.deleteMsg(msg).catch((e) => {
-      console.error("Error: Unable to delete original message. Log:");
       console.error(e);
     });
   }
@@ -118,8 +119,8 @@ class SpoilerBot {
   /* --- Message Generators --- */
   helpMsg() {
     var embed = new Discord.RichEmbed()
-      .setTitle("SpoilerBot Help")
-      .setURL("https://discord-spoilerbot.glitch.me")
+      .setTitle(this.config.HELP_TITLE)
+      .setURL(this.config.HOMEPAGE)
       .setColor(this.config.COLOR)
       .setDescription(this.config.HELP_MSG);
     return {embed};
@@ -135,28 +136,17 @@ class SpoilerBot {
   }
 
   /* --- Network Task Helpers --- */
-  async sendMsg(msg, channel) {
+  sendMsg(msg, channel) {
     return channel.send(msg);
   }
 
-  async deleteMsg(msg) {
+  deleteMsg(msg) {
     return msg.delete();
   }
 
   start() {
-    var bot = this;
-    this.client.on("ready", function() {
-      console.log("SpoilerBot online.");
-    });
-    this.client.on("message", function(message) {
-      bot.handleMsg(message);
-    });
-    this.client.login(process.env.DISCORD_SECRET);
+    return this.client.login(process.env.DISCORD_SECRET);
   }
 }
-
-process.on('unhandledRejection', (reason, p) => {
-  console.error("Unhandled Promise Rejection at: Promise ", p, "reason:", reason);
-});
 
 module.exports = SpoilerBot;
