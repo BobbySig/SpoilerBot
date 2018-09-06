@@ -235,6 +235,37 @@ describe('SpoilerBot', function() {
   });
 
   describe('Message Handling Helpers', function() {
+    before(function() {
+      // Prep Sinon Spy Injection Methods
+      this.prepBothResolve = function() {
+        this.bot.sendMsg = sinon.stub().resolves();
+        this.bot.deleteMsg = sinon.stub().resolves();
+      };
+      this.prepSendThrows = function() {
+        this.bot.sendMsg = sinon.stub().throws();
+        this.bot.deleteMsg = sinon.stub().resolves();
+      };
+      this.prepSendThrowsSecond = function() {
+        this.bot.sendMsg = sinon.stub();
+        this.bot.sendMsg.onCall(0).resolves();
+        this.bot.sendMsg.onCall(1).throws();
+        this.bot.deleteMsg = sinon.stub().resolves();
+      };
+      this.prepDeleteThrows = function() {
+        this.bot.sendMsg = sinon.stub().resolves();
+        this.bot.deleteMsg = sinon.stub().throws();
+      };
+      this.prepBothThrow = function() {
+        this.bot.sendMsg = sinon.stub().throws();
+        this.bot.deleteMsg = sinon.stub().throws();
+      };
+      // Prep Test Message
+      this.handlingHelperTestMsg = {
+        author: 'This is a test.',
+        content: 'This is also a test.'
+      };
+    })
+
     describe('shouldRespond', function() {
       it("should return false if the message is sent by a bot", function() {
         var mockMessage = {
@@ -271,68 +302,42 @@ describe('SpoilerBot', function() {
     });
 
     describe('sendTitleTooLongMsg', function() {
-      beforeEach(function() {
-        this.bot.sendMsg = sinon.stub().resolves();
-        this.bot.deleteMsg = sinon.stub().resolves();
-        this.titleTooLongTest = {
-          author: 'This is a test.',
-          content: 'This is also a test.'
-        };
-      });
-
       it('sends the title too long error & the original message to the author, then deletes the original', async function() {
-        await this.bot.sendTitleTooLongMsg(this.titleTooLongTest);
+        this.prepBothResolve();
+        await this.bot.sendTitleTooLongMsg(this.handlingHelperTestMsg);
         expect(this.bot.sendMsg.calledTwice).to.equal(true);
         expect(this.bot.deleteMsg.calledOnce).to.equal(true);
       });
     });
 
     describe('sendSpoilerTooLongMsg', function() {
-      beforeEach(function() {
-        this.bot.sendMsg = sinon.stub().resolves();
-        this.bot.deleteMsg = sinon.stub().resolves();
-        this.spoilerTooLongTest = {
-          author: 'This is a test.',
-          content: 'This is also a test.'
-        };
-      });
-
       it('sends the spoiler too long error & the original message to the author, then deletes the original', async function() {
-        await this.bot.sendSpoilerTooLongMsg(this.spoilerTooLongTest);
+        this.prepBothResolve();
+        await this.bot.sendSpoilerTooLongMsg(this.handlingHelperTestMsg);
         expect(this.bot.sendMsg.calledTwice).to.equal(true);
         expect(this.bot.deleteMsg.calledOnce).to.equal(true);
       });
     });
 
     describe('sendSpoilerMessage', function() {
-      beforeEach(function() {
-        this.bot.sendMsg = sinon.stub().resolves();
-        this.bot.deleteMsg = sinon.stub().resolves();
-        this.spoilerTest = {
-          author: 'This is a test.',
-          content: 'This is also a test.'
-        };
-      });
-
       it('sends the spoiler message, then deletes the original', async function() {
-        await this.bot.sendSpoilerMessage(this.spoilerTest, "Title", "EncodedSpoiler", "URL", this.spoilerTest.author, "AvatarURL");
+        this.prepBothResolve();
+        await this.bot.sendSpoilerMessage(
+          this.handlingHelperTestMsg,
+          "Title",
+          "EncodedSpoiler",
+          "URL",
+          this.handlingHelperTestMsg.author,
+          "AvatarURL");
         expect(this.bot.sendMsg.calledOnce).to.equal(true);
         expect(this.bot.deleteMsg.calledOnce).to.equal(true);
       });
     });
 
     describe('sendHelpMsg', function() {
-      beforeEach(function() {
-        this.bot.sendMsg = sinon.stub().resolves();
-        this.bot.deleteMsg = sinon.stub().resolves();
-        this.helpTest = {
-          author: 'This is a test.',
-          content: 'This is also a test.'
-        };
-      });
-
       it('sends the help message, then deletes the original', async function() {
-        await this.bot.sendHelpMsg(this.helpTest);
+        this.prepBothResolve();
+        await this.bot.sendHelpMsg(this.handlingHelperTestMsg);
         expect(this.bot.sendMsg.calledOnce).to.equal(true);
         expect(this.bot.deleteMsg.calledOnce).to.equal(true);
       });
