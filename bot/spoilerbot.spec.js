@@ -1,4 +1,7 @@
-const expect = require('chai').expect;
+const chai = require('chai');
+const chaiAsPromised = require("chai-as-promised");
+chai.use(chaiAsPromised);
+const expect = chai.expect;
 const sinon = require('sinon');
 const Discord = require('discord.js');
 const ROT13 = require('caesar-salad').ROT13;
@@ -242,29 +245,37 @@ describe('SpoilerBot', function() {
         this.bot.deleteMsg = sinon.stub().resolves();
       };
       this.prepSendThrows = function() {
-        this.bot.sendMsg = sinon.stub().throws();
+        this.bot.sendMsg = sinon.stub().rejects();
         this.bot.deleteMsg = sinon.stub().resolves();
+        console.error = sinon.spy();
       };
       this.prepSendThrowsSecond = function() {
         this.bot.sendMsg = sinon.stub();
         this.bot.sendMsg.onCall(0).resolves();
-        this.bot.sendMsg.onCall(1).throws();
+        this.bot.sendMsg.onCall(1).rejects();
         this.bot.deleteMsg = sinon.stub().resolves();
+        console.error = sinon.spy();
       };
       this.prepDeleteThrows = function() {
         this.bot.sendMsg = sinon.stub().resolves();
-        this.bot.deleteMsg = sinon.stub().throws();
+        this.bot.deleteMsg = sinon.stub().rejects();
+        console.error = sinon.spy();
       };
       this.prepBothThrow = function() {
-        this.bot.sendMsg = sinon.stub().throws();
-        this.bot.deleteMsg = sinon.stub().throws();
+        this.bot.sendMsg = sinon.stub().rejects();
+        this.bot.deleteMsg = sinon.stub().rejects();
+        console.error = sinon.spy();
       };
       // Prep Test Message
       this.handlingHelperTestMsg = {
         author: 'This is a test.',
         content: 'This is also a test.'
       };
-    })
+      // Prep identical tests
+      this.consoleErrorTwice = function() {
+        expect(console.error.calledTwice).to.be.true;
+      };
+    });
 
     describe('shouldRespond', function() {
       it("should return false if the message is sent by a bot", function() {
@@ -313,6 +324,12 @@ describe('SpoilerBot', function() {
         expect(this.bot.sendMsg.getCall(1).args).to.deep.equal([this.handlingHelperTestMsg.content, this.handlingHelperTestMsg.author]);
         expect(this.bot.deleteMsg.calledOnce).to.equal(true);
         expect(this.bot.deleteMsg.getCall(0).args).to.deep.equal([this.handlingHelperTestMsg]);
+      });
+
+      it('prints to console.error when sendMsg throws an error when it\'s first called', async function() {
+        this.prepSendThrows();
+        await this.bot.sendTitleTooLongMsg(this.handlingHelperTestMsg)
+        this.consoleErrorTwice();
       });
     });
 
