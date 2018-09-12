@@ -1,7 +1,7 @@
 {
   "name": "discord-spoilerbot",
   "version": "0.4.0",
-  "description": "A Discord bot that encodes spoilers with ROT13 to keep your server sinply spoiler-free.",
+  "description": "A Discord bot that encodes spoilers with ROT13 to keep your server simply spoiler-free.",
   "main": "server.js",
   "scripts": {
     "test": "npm run bot-test-unit",
@@ -15,7 +15,6 @@
   },
   "devDependencies": {
     "chai": "^4.1.2",
-    "chai-as-promised": "^7.1.1",
     "dotenv": "^6.0.0",
     "mocha": "^5.2.0",
     "sinon": "^6.1.5"
