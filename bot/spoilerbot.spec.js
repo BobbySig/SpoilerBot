@@ -328,7 +328,25 @@ describe('SpoilerBot', function() {
 
       it('prints to console.error when sendMsg throws an error when it\'s first called', async function() {
         this.prepSendThrows();
-        await this.bot.sendTitleTooLongMsg(this.handlingHelperTestMsg)
+        await this.bot.sendTitleTooLongMsg(this.handlingHelperTestMsg);
+        this.consoleErrorTwice();
+      });
+
+      it('prints to console.error when sendMsg throws an error the second time it\'s called', async function() {
+        this.prepSendThrowsSecond();
+        await this.bot.sendTitleTooLongMsg(this.handlingHelperTestMsg);
+        this.consoleErrorTwice();
+      });
+
+      it('prints to console.error when deleteMsg throws an error', async function() {
+        this.prepDeleteThrows();
+        await this.bot.sendTitleTooLongMsg(this.handlingHelperTestMsg);
+        this.consoleErrorTwice();
+      });
+
+      it('prints to console.error when both sendMsg and deleteMsg can throw an error', async function() {
+        this.prepBothThrow();
+        await this.bot.sendTitleTooLongMsg(this.handlingHelperTestMsg);
         this.consoleErrorTwice();
       });
     });
@@ -339,6 +357,30 @@ describe('SpoilerBot', function() {
         await this.bot.sendSpoilerTooLongMsg(this.handlingHelperTestMsg);
         expect(this.bot.sendMsg.calledTwice).to.equal(true);
         expect(this.bot.deleteMsg.calledOnce).to.equal(true);
+      });
+
+      it('prints to console.error when sendMsg throws an error when it\'s first called', async function() {
+        this.prepSendThrows();
+        await this.bot.sendSpoilerTooLongMsg(this.handlingHelperTestMsg);
+        this.consoleErrorTwice();
+      });
+
+      it('prints to console.error when sendMsg throws an error the second time it\'s called', async function() {
+        this.prepSendThrowsSecond();
+        await this.bot.sendSpoilerTooLongMsg(this.handlingHelperTestMsg);
+        this.consoleErrorTwice();
+      });
+
+      it('prints to console.error when deleteMsg throws an error', async function() {
+        this.prepDeleteThrows();
+        await this.bot.sendSpoilerTooLongMsg(this.handlingHelperTestMsg);
+        this.consoleErrorTwice();
+      });
+
+      it('prints to console.error when both sendMsg and deleteMsg can throw an error', async function() {
+        this.prepBothThrow();
+        await this.bot.sendSpoilerTooLongMsg(this.handlingHelperTestMsg);
+        this.consoleErrorTwice();
       });
     });
 
@@ -355,6 +397,42 @@ describe('SpoilerBot', function() {
         expect(this.bot.sendMsg.calledOnce).to.equal(true);
         expect(this.bot.deleteMsg.calledOnce).to.equal(true);
       });
+
+      it('prints to console.error when sendMsg throws an error when it\'s first called', async function() {
+        this.prepSendThrows();
+        await this.bot.sendSpoilerMessage(
+          this.handlingHelperTestMsg,
+          "Title",
+          "EncodedSpoiler",
+          "URL",
+          this.handlingHelperTestMsg.author,
+          "AvatarURL");
+        this.consoleErrorTwice();
+      });
+
+      it('prints to console.error when deleteMsg throws an error', async function() {
+        this.prepDeleteThrows();
+        await this.bot.sendSpoilerMessage(
+          this.handlingHelperTestMsg,
+          "Title",
+          "EncodedSpoiler",
+          "URL",
+          this.handlingHelperTestMsg.author,
+          "AvatarURL");
+        this.consoleErrorTwice();
+      });
+
+      it('prints to console.error when both sendMsg and deleteMsg can throw an error', async function() {
+        this.prepBothThrow();
+        await this.bot.sendSpoilerMessage(
+          this.handlingHelperTestMsg,
+          "Title",
+          "EncodedSpoiler",
+          "URL",
+          this.handlingHelperTestMsg.author,
+          "AvatarURL");
+        this.consoleErrorTwice();
+      });
     });
 
     describe('sendHelpMsg', function() {
@@ -363,6 +441,24 @@ describe('SpoilerBot', function() {
         await this.bot.sendHelpMsg(this.handlingHelperTestMsg);
         expect(this.bot.sendMsg.calledOnce).to.equal(true);
         expect(this.bot.deleteMsg.calledOnce).to.equal(true);
+      });
+
+      it('prints to console.error when sendMsg throws an error when it\'s first called', async function() {
+        this.prepSendThrows();
+        await this.bot.sendHelpMsg(this.handlingHelperTestMsg);
+        this.consoleErrorTwice();
+      });
+
+      it('prints to console.error when deleteMsg throws an error', async function() {
+        this.prepDeleteThrows();
+        await this.bot.sendHelpMsg(this.handlingHelperTestMsg);
+        this.consoleErrorTwice();
+      });
+
+      it('prints to console.error when both sendMsg and deleteMsg can throw an error', async function() {
+        this.prepBothThrow();
+        await this.bot.sendHelpMsg(this.handlingHelperTestMsg);
+        this.consoleErrorTwice();
       });
     });
   });
