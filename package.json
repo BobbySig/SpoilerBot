@@ -1,7 +1,7 @@
 {
   "name": "discord-spoilerbot",
-  "version": "0.4.1",
-  "description": "A Discord bot that re-posts spoiler-laden messages as secret GitHub Gists to keep your server spoiler-free.",
+  "version": "0.4.2",
+  "description": "A Discord bot that encodes spoilers with ROT13 to keep your server simply spoiler-free.",
   "main": "server.js",
   "scripts": {
     "test": "npm run bot-test-unit",
@@ -14,10 +14,10 @@
     "express": "^4.16.3"
   },
   "devDependencies": {
+    "chai": "^4.1.2",
     "dotenv": "^6.0.0",
     "mocha": "^5.2.0",
-    "sinon": "^6.1.5",
-    "chai": "^4.1.2"
+    "sinon": "^6.1.5"
   },
   "engines": {
     "node": "8.x"

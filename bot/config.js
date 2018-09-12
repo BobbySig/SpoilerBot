@@ -26,7 +26,9 @@ class Config {
       " is anything that you want run through ROT13.";
 
     // Overlength Messages
+    this.OVERLENGTH_SPOILER_HEAD = "Your spoiler is too long!";
     this.OVERLENGTH_SPOILER = "Your spoiler is too long, please shorten it.";
+    this.OVERLENGTH_TITLE_HEAD = "Your spoiler's title is too long!";
     this.OVERLENGTH_TITLE = "Your spoiler's title is too long," +
       " please shorten it to 256 characters or less.";
     this.OVERLENGTH_FOOTER = " Here's your original message:";
