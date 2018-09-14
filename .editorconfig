@@ -1,4 +1,4 @@
 # Indentation override for all JS under lib directory
-[**.js]
+[**.{js,json,yml}]
 indent_style = space
 indent_size = 2
