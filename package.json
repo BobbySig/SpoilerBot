@@ -1,5 +1,5 @@
 {
-  "name": "discord-spoilerbot",
+  "name": "@bobbysig/spoilerbot",
   "version": "1.0.0",
   "description": "A Discord bot that encodes spoilers with ROT13 to keep your server simply spoiler-free.",
   "main": "./lib/spoilerbot",
