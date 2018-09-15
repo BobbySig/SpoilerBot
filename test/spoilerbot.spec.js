@@ -3,9 +3,9 @@ const expect = chai.expect;
 const sinon = require('sinon');
 const Discord = require('discord.js');
 const ROT13 = require('caesar-salad').ROT13;
-const Config = require("./config.js");
+const Config = require("../lib/config");
 const config = new Config();
-const SpoilerBot = require('./spoilerbot');
+const SpoilerBot = require('../lib/spoilerbot');
 
 describe('SpoilerBot', function() {
   beforeEach(function() {

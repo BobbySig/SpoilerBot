@@ -6,7 +6,7 @@ if (process.env.NODE_ENV !== "production")
 
 // Load Imported Code
 const Discord = require('discord.js');
-const SpoilerBot = require('./bot/spoilerbot');
+const SpoilerBot = require('./lib/spoilerbot');
 
 // Init Express
 var express = require('express');
