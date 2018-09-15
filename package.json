@@ -1,6 +1,6 @@
 {
   "name": "discord-spoilerbot",
-  "version": "0.4.2",
+  "version": "1.0.0",
   "description": "A Discord bot that encodes spoilers with ROT13 to keep your server simply spoiler-free.",
   "main": "./lib/spoilerbot",
   "scripts": {
