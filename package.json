@@ -12,11 +12,11 @@
     "discord.js": "^11.4.0"
   },
   "devDependencies": {
-    "chai": "^4.1.2",
+    "chai": "^4.2.0",
     "cross-env": "^5.2.0",
-    "dotenv": "^6.0.0",
+    "dotenv": "^6.1.0",
     "mocha": "^5.2.0",
-    "sinon": "^6.1.5"
+    "sinon": "^6.3.5"
   },
   "engines": {
     "node": "8.x"
