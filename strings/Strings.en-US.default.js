@@ -1,14 +1,16 @@
 'use strict';
 /* --- SpoilerBot Strings --- */
 
-class Config {
+class Strings {
   constructor() {
     // Single Characters
     this.PREFIX = "!";
     this.DELINIATOR = "|";
 
     // Styling
-    this.COLOR = "#5b187c";
+    this.HELP_COLOR = "#5b187c";
+    this.SPOILER_COLOR = "#5b187c";
+    this.ERROR_COLOR = "#5b187c";
 
     // Commands
     this.CMD_SPOILER = this.PREFIX + "spoiler";
@@ -38,4 +40,4 @@ class Config {
   }
 }
 
-module.exports = Config;
+module.exports = Strings;

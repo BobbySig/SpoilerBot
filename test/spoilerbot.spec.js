@@ -3,8 +3,8 @@ const expect = chai.expect;
 const sinon = require('sinon');
 const Discord = require('discord.js');
 const ROT13 = require('caesar-salad').ROT13;
-const Config = require("../lib/config");
-const config = new Config();
+const Strings = require("../strings/Strings.en-US.default");
+const strings = new Strings();
 const SpoilerBot = require('../lib/spoilerbot');
 
 describe('SpoilerBot', function() {
@@ -133,10 +133,10 @@ describe('SpoilerBot', function() {
       });
 
       it('should call sendSpoilerMessage when the message is a valid full spoiler message', function() {
-        var content = config.CMD_SPOILER + " " + this.strings.title.valid + " " +
-          config.DELINIATOR + " " + this.strings.content.valid;
+        var content = strings.CMD_SPOILER + " " + this.strings.title.valid + " " +
+          strings.DELINIATOR + " " + this.strings.content.valid;
         var encoded = ROT13.Cipher().crypt(this.strings.content.valid);
-        var url = config.DECODE_URL_BASE + encodeURIComponent(encoded);
+        var url = strings.DECODE_URL_BASE + encodeURIComponent(encoded);
 
         this.mockSpoilerMsg.content = content;
         this.bot.processSpoiler(this.mockSpoilerMsg);
@@ -157,7 +157,7 @@ describe('SpoilerBot', function() {
 
       it('should call sendHelpMsg when the message is "!spoiler"', function() {
         // No extra whitespace
-        this.mockSpoilerMsg.content = config.CMD_SPOILER;
+        this.mockSpoilerMsg.content = strings.CMD_SPOILER;
         this.bot.processSpoiler(this.mockSpoilerMsg);
         expect(this.bot.sendHelpMsg.calledWithExactly(this.mockSpoilerMsg)).to.equal(true);
         expect(this.bot.sendTitleTooLongMsg.called).to.equal(false);
@@ -165,7 +165,7 @@ describe('SpoilerBot', function() {
         expect(this.bot.sendSpoilerMessage.called).to.equal(false);
 
         // Extra whitespace
-        this.mockSpoilerMsg.content = config.CMD_SPOILER + " ";
+        this.mockSpoilerMsg.content = strings.CMD_SPOILER + " ";
         this.bot.processSpoiler(this.mockSpoilerMsg);
         expect(this.bot.sendHelpMsg.calledWithExactly(this.mockSpoilerMsg)).to.equal(true);
         expect(this.bot.sendTitleTooLongMsg.called).to.equal(false);
@@ -175,7 +175,7 @@ describe('SpoilerBot', function() {
 
       it('should call sendHelpMsg when the message is "!spoiler|" or "!spoiler |"', function() {
         // No whitespace
-        this.mockSpoilerMsg.content = config.CMD_SPOILER + config.DELINIATOR;
+        this.mockSpoilerMsg.content = strings.CMD_SPOILER + strings.DELINIATOR;
         this.bot.processSpoiler(this.mockSpoilerMsg);
         expect(this.bot.sendHelpMsg.calledWithExactly(this.mockSpoilerMsg)).to.equal(true);
         expect(this.bot.sendTitleTooLongMsg.called).to.equal(false);
@@ -183,7 +183,7 @@ describe('SpoilerBot', function() {
         expect(this.bot.sendSpoilerMessage.called).to.equal(false);
 
         // Added whitespace
-        this.mockSpoilerMsg.content = config.CMD_SPOILER + " " + config.DELINIATOR;
+        this.mockSpoilerMsg.content = strings.CMD_SPOILER + " " + strings.DELINIATOR;
         this.bot.processSpoiler(this.mockSpoilerMsg);
         expect(this.bot.sendHelpMsg.calledWithExactly(this.mockSpoilerMsg)).to.equal(true);
         expect(this.bot.sendTitleTooLongMsg.called).to.equal(false);
@@ -193,8 +193,8 @@ describe('SpoilerBot', function() {
 
       it('should call sendHelpMsg when the message is "!spoiler title |" or "!spoiler title | "', function() {
         // No extra whitespace
-        this.mockSpoilerMsg.content = config.CMD_SPOILER + " " + this.strings.title.valid + " " +
-          config.DELINIATOR;
+        this.mockSpoilerMsg.content = strings.CMD_SPOILER + " " + this.strings.title.valid + " " +
+          strings.DELINIATOR;
         this.bot.processSpoiler(this.mockSpoilerMsg);
         expect(this.bot.sendHelpMsg.calledWithExactly(this.mockSpoilerMsg)).to.equal(true);
         expect(this.bot.sendTitleTooLongMsg.called).to.equal(false);
@@ -202,8 +202,8 @@ describe('SpoilerBot', function() {
         expect(this.bot.sendSpoilerMessage.called).to.equal(false);
 
         // Extra whitespace
-        this.mockSpoilerMsg.content = config.CMD_SPOILER + " " + this.strings.title.valid + " " +
-          config.DELINIATOR + " ";
+        this.mockSpoilerMsg.content = strings.CMD_SPOILER + " " + this.strings.title.valid + " " +
+          strings.DELINIATOR + " ";
         this.bot.processSpoiler(this.mockSpoilerMsg);
         expect(this.bot.sendHelpMsg.calledWithExactly(this.mockSpoilerMsg)).to.equal(true);
         expect(this.bot.sendTitleTooLongMsg.called).to.equal(false);
@@ -212,8 +212,8 @@ describe('SpoilerBot', function() {
       });
 
       it('should call sendTitleTooLongMsg when only the title section is over 256 characters', function() {
-        this.mockSpoilerMsg.content = config.CMD_SPOILER + " " + this.strings.title.invalid + " " +
-          config.DELINIATOR + " " + this.strings.content.valid;
+        this.mockSpoilerMsg.content = strings.CMD_SPOILER + " " + this.strings.title.invalid + " " +
+          strings.DELINIATOR + " " + this.strings.content.valid;
         this.bot.processSpoiler(this.mockSpoilerMsg);
 
         expect(this.bot.sendHelpMsg.called).to.equal(false);
@@ -223,8 +223,8 @@ describe('SpoilerBot', function() {
       });
 
       it('should call sendSpoilerTooLongMsg when only the spoiler section is too long', function() {
-        this.mockSpoilerMsg.content = config.CMD_SPOILER + " " + this.strings.title.valid + " " +
-          config.DELINIATOR + " " + this.strings.content.invalid;
+        this.mockSpoilerMsg.content = strings.CMD_SPOILER + " " + this.strings.title.valid + " " +
+          strings.DELINIATOR + " " + this.strings.content.invalid;
         this.bot.processSpoiler(this.mockSpoilerMsg);
 
         expect(this.bot.sendHelpMsg.called).to.equal(false);
@@ -313,9 +313,9 @@ describe('SpoilerBot', function() {
     describe('sendTitleTooLongMsg', function() {
       it('sends the title too long error & the original message to the author, then deletes the original', async function() {
         this.prepBothResolve();
-        var errMsg = this.bot.errorMsg(this.bot.config.OVERLENGTH_TITLE_HEAD,
-          this.bot.config.OVERLENGTH_TITLE,
-          this.bot.config.OVERLENGTH_FOOTER);
+        var errMsg = this.bot.errorMsg(this.bot.strings.OVERLENGTH_TITLE_HEAD,
+          this.bot.strings.OVERLENGTH_TITLE,
+          this.bot.strings.OVERLENGTH_FOOTER);
         await this.bot.sendTitleTooLongMsg(this.handlingHelperTestMsg);
         expect(this.bot.sendMsg.calledTwice).to.equal(true);
         expect(this.bot.sendMsg.getCall(0).args).to.deep.equal([errMsg, this.handlingHelperTestMsg.author]);
@@ -465,10 +465,10 @@ describe('SpoilerBot', function() {
     describe('helpMsg', function() {
       it('returns a message containing the embed for the help message', function() {
         var embed = new Discord.RichEmbed()
-          .setTitle(this.bot.config.HELP_TITLE)
-          .setURL(this.bot.config.HOMEPAGE)
-          .setColor(this.bot.config.COLOR)
-          .setDescription(this.bot.config.HELP_MSG);
+          .setTitle(this.bot.strings.HELP_TITLE)
+          .setURL(this.bot.strings.HOMEPAGE)
+          .setColor(this.bot.strings.HELP_COLOR)
+          .setDescription(this.bot.strings.HELP_MSG);
         expect({embed}).to.deep.equal(this.bot.helpMsg());
       });
     });
@@ -478,7 +478,7 @@ describe('SpoilerBot', function() {
         var title = "ErrTitle", msg = "ErrMsg", footer = "ErrFooter";
         var embed = new Discord.RichEmbed()
           .setTitle(title)
-          .setColor(this.bot.config.COLOR)
+          .setColor(this.bot.strings.ERROR_COLOR)
           .setDescription(msg)
           .setFooter(footer);
         expect({embed}).to.deep.equal(this.bot.errorMsg(title, msg, footer));
