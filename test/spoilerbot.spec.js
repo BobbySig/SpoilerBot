@@ -277,14 +277,14 @@ describe('SpoilerBot', function() {
 
     describe('shouldRespond', function() {
       it("should return false if the message is sent by a bot", function() {
-        var mockMessage = {
+        let mockMessage = {
           author: {bot: true}
         };
         expect(this.bot.shouldRespond(mockMessage)).to.equal(false);
       });
 
       it("should return false if message.channel isn't a Discord.TextChannel", function() {
-        var mockMessage = {
+        let mockMessage = {
           author: {bot: false},
           channel: {}
         };
@@ -292,7 +292,7 @@ describe('SpoilerBot', function() {
       });
 
       it("should return false if the message doesn't start with '!'", function() {
-        var mockMessage = {
+        let mockMessage = {
           author: {bot: false},
           channel: sinon.createStubInstance(Discord.TextChannel),
           content: "not !"
@@ -301,7 +301,7 @@ describe('SpoilerBot', function() {
       });
 
       it("should return true if message is a valid command in a valid channel from a non-bot user", function() {
-        var mockMessage = {
+        let mockMessage = {
           author: {bot: false},
           channel: sinon.createStubInstance(Discord.TextChannel),
           content: "!"
@@ -313,7 +313,7 @@ describe('SpoilerBot', function() {
     describe('sendTitleTooLongMsg', function() {
       it('sends the title too long error & the original message to the author, then deletes the original', async function() {
         this.prepBothResolve();
-        var errMsg = this.bot.errorMsg(this.bot.strings.OVERLENGTH_TITLE_HEAD,
+        let errMsg = this.bot.errorMsg(this.bot.strings.OVERLENGTH_TITLE_HEAD,
           this.bot.strings.OVERLENGTH_TITLE,
           this.bot.strings.OVERLENGTH_FOOTER);
         await this.bot.sendTitleTooLongMsg(this.handlingHelperTestMsg);
@@ -464,7 +464,7 @@ describe('SpoilerBot', function() {
   describe('Message Generators', function() {
     describe('helpMsg', function() {
       it('returns a message containing the embed for the help message', function() {
-        var embed = new Discord.RichEmbed()
+        let embed = new Discord.RichEmbed()
           .setTitle(this.bot.strings.HELP_TITLE)
           .setURL(this.bot.strings.HOMEPAGE)
           .setColor(this.bot.strings.HELP_COLOR)
@@ -475,8 +475,8 @@ describe('SpoilerBot', function() {
 
     describe('errorMsg', function() {
       it('returns a rich embed with the requested error message', function() {
-        var title = "ErrTitle", msg = "ErrMsg", footer = "ErrFooter";
-        var embed = new Discord.RichEmbed()
+        let title = "ErrTitle", msg = "ErrMsg", footer = "ErrFooter";
+        let embed = new Discord.RichEmbed()
           .setTitle(title)
           .setColor(this.bot.strings.ERROR_COLOR)
           .setDescription(msg)
